@@ -57,7 +57,7 @@ function RootLayoutNav() {
       // value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
       value={DefaultTheme}
     >
-      <GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <Slot />
       </GestureHandlerRootView>
     </ThemeProvider>

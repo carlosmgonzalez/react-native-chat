@@ -14,7 +14,6 @@ export default function InitialPage() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session: sessionData } }) => {
       setSession(sessionData);
-      console.log(sessionData);
     });
   }, []);
 

@@ -6,6 +6,7 @@ import { Button, Input } from "react-native-elements";
 import { Session } from "@supabase/supabase-js";
 import { router } from "expo-router";
 import { useSessionStore } from "@/store/session-store";
+import { Avatar } from "./avatar";
 
 interface Props {
   session: Session;
@@ -38,6 +39,7 @@ export const Account = ({ session }: Props) => {
       }
 
       if (data) {
+        console.log(data.avatar_url);
         setUsername(data.username);
         setAvatarUrl(data.avatar_url);
         setWebsite(data.website);
@@ -89,6 +91,13 @@ export const Account = ({ session }: Props) => {
 
   return (
     <View style={styles.container}>
+      <Avatar
+        url={avatarUrl}
+        onUpload={(url: string) => {
+          setAvatarUrl(url);
+          updateProfile({ username, website, avatar_url: url });
+        }}
+      />
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Input label="Email" value={session?.user?.email} disabled />
       </View>
