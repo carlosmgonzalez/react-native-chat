@@ -1,10 +1,7 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
-import { Pressable, useColorScheme } from "react-native";
-import Colors from "@/constants/Colors";
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -15,22 +12,17 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
         // tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         tabBarActiveTintColor: "#fff",
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          // title: "Chats",
+          title: "Chats",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name="comments-o"
@@ -44,6 +36,22 @@ export default function TabLayout() {
               Chat
             </Text>
           ),
+          headerRight: (props) => {
+            return (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 15,
+                }}
+              >
+                <Link href={"/(home)/users"}>
+                  <FontAwesome name="users" size={20} color="gray" />
+                </Link>
+              </View>
+            );
+          },
         }}
       />
       <Tabs.Screen
@@ -59,6 +67,7 @@ export default function TabLayout() {
               Profile
             </Text>
           ),
+          headerTitle: "Profile",
         }}
       />
     </Tabs>

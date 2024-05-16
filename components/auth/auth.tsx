@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { Alert, StyleSheet, AppState, View } from "react-native";
-// import { View } from "@/components/Themed";
 import { supabase } from "@/libs/supabase";
 import { Button, Input } from "react-native-elements";
 import { router } from "expo-router";
-import { useSessionStore } from "@/store/session-store";
 
 AppState.addEventListener("change", (state) => {
   if (state === "active") {
@@ -18,7 +16,6 @@ export const Auth = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const setSession = useSessionStore((state) => state.setSession);
 
   const signInWithEmail = async () => {
     setLoading(true);
@@ -31,7 +28,6 @@ export const Auth = () => {
     });
 
     if (error) Alert.alert(error.message);
-    setSession(session);
     setLoading(false);
     router.replace("/profile");
   };
@@ -47,8 +43,6 @@ export const Auth = () => {
     });
 
     if (error) Alert.alert(error.message);
-    // if (!session) Alert.alert("Plase check your inbox for email verification!");
-    setSession(session);
     setLoading(false);
   };
 

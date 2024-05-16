@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/libs/supabase";
-import { StyleSheet, Alert, View } from "react-native";
-// import { View } from "../Themed";
+import { StyleSheet, Alert, View, ScrollView } from "react-native";
 import { Button, Input } from "react-native-elements";
 import { Session } from "@supabase/supabase-js";
 import { router } from "expo-router";
-import { useSessionStore } from "@/store/session-store";
 import { Avatar } from "./avatar";
 
 interface Props {
@@ -15,9 +13,8 @@ interface Props {
 export const Account = ({ session }: Props) => {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
-  const [website, setWebsite] = useState("");
+  const [fullName, setFullName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-  const setSession = useSessionStore((state) => state.setSession);
 
   useEffect(() => {
     if (session) getProfile();
@@ -30,7 +27,7 @@ export const Account = ({ session }: Props) => {
 
       const { data, error, status } = await supabase
         .from("profiles")
-        .select("username, website, avatar_url")
+        .select("username, avatar_url, full_name")
         .eq("id", session.user.id)
         .single();
 
@@ -39,10 +36,9 @@ export const Account = ({ session }: Props) => {
       }
 
       if (data) {
-        console.log(data.avatar_url);
         setUsername(data.username);
         setAvatarUrl(data.avatar_url);
-        setWebsite(data.website);
+        setFullName(data.full_name);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -55,12 +51,12 @@ export const Account = ({ session }: Props) => {
 
   const updateProfile = async ({
     username,
-    website,
     avatar_url,
+    full_name,
   }: {
     username: string;
-    website: string;
     avatar_url: string;
+    full_name: string;
   }) => {
     try {
       setLoading(true);
@@ -72,8 +68,8 @@ export const Account = ({ session }: Props) => {
       const updates = {
         id: session.user.id,
         username,
-        website,
         avatar_url,
+        full_name,
         updated_at: new Date(),
       };
 
@@ -91,58 +87,67 @@ export const Account = ({ session }: Props) => {
 
   return (
     <View style={styles.container}>
-      <Avatar
-        url={avatarUrl}
-        onUpload={(url: string) => {
-          setAvatarUrl(url);
-          updateProfile({ username, website, avatar_url: url });
-        }}
-      />
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input label="Email" value={session?.user?.email} disabled />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Username"
-          value={username || ""}
-          onChangeText={(text) => setUsername(text)}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Website"
-          value={website || ""}
-          onChangeText={(text) => setWebsite(text)}
-        />
-      </View>
-
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button
-          title={loading ? "Loading ..." : "Update"}
-          onPress={() =>
-            updateProfile({ username, website, avatar_url: avatarUrl })
-          }
-          disabled={loading}
-        />
-      </View>
-
-      <View style={styles.verticallySpaced}>
-        <Button
-          title="Sign Out"
-          onPress={() => {
-            supabase.auth.signOut();
-            setSession(null);
-            router.replace("/sign-in");
+      <ScrollView>
+        <Avatar
+          url={avatarUrl}
+          onUpload={(url: string) => {
+            setAvatarUrl(url);
+            updateProfile({
+              username,
+              full_name: fullName,
+              avatar_url: url,
+            });
           }}
         />
-      </View>
+        <View style={[styles.verticallySpaced, styles.mt20]}>
+          <Input label="Email" value={session?.user?.email} disabled />
+        </View>
+        <View style={styles.verticallySpaced}>
+          <Input
+            label="Full name"
+            value={fullName || ""}
+            onChangeText={(text) => setFullName(text)}
+          />
+        </View>
+        <View style={styles.verticallySpaced}>
+          <Input
+            label="Username"
+            value={username || ""}
+            onChangeText={(text) => setUsername(text)}
+          />
+        </View>
+
+        <View style={[styles.verticallySpaced, styles.mt20]}>
+          <Button
+            title={loading ? "Loading ..." : "Update"}
+            onPress={() =>
+              updateProfile({
+                username,
+                full_name: fullName,
+                avatar_url: avatarUrl,
+              })
+            }
+            disabled={loading}
+          />
+        </View>
+
+        <View style={styles.verticallySpaced}>
+          <Button
+            title="Sign Out"
+            onPress={() => {
+              supabase.auth.signOut();
+              router.replace("/sign-in");
+            }}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
+    marginTop: 20,
     padding: 12,
   },
   verticallySpaced: {

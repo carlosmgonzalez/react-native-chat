@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSessionStore } from "@/store/session-store";
 import { router } from "expo-router";
 
-export default function TabTwoScreen() {
+export default function ProfileScreen() {
   const session = useSessionStore((state) => state.session);
 
   useEffect(() => {
