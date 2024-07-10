@@ -24,11 +24,11 @@ export const UserListItem = ({ user }: { user: User }) => {
   const onPress = async () => {
     const channel = client.channel("messaging", {
       members: [session?.user.id!, user.id],
-      name: user.full_name,
+      name: "Messages",
     });
 
-    await channel.watch();
-    router.replace(`/(home)/channel/${channel.cid}`);
+    await channel.create();
+    router.replace(`/(home)/(tabs)`);
   };
 
   return (

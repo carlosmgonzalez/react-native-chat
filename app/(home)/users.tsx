@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import { supabase } from "@/libs/supabase";
 import { useSessionStore } from "@/store/session-store";
 import { UserListItem } from "@/components/user-list-item";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export interface User {
   id: string;
@@ -30,7 +31,12 @@ export default function UsersScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ headerShown: true, title: "Users" }} />
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          title: "Users",
+        }}
+      />
       <FlatList
         data={users}
         contentContainerStyle={{ gap: 5 }}

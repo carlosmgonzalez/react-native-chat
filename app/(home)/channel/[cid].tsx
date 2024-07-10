@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, Pressable } from "react-native";
 import React, { useEffect } from "react";
 import {
   Channel,
@@ -6,9 +6,15 @@ import {
   MessageList,
   useChatContext,
 } from "stream-chat-expo";
-import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
+import {
+  Stack,
+  router,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import { useChannelStore } from "@/store/channel-store";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function ChannelScreen() {
   const channel = useChannelStore((state) => state.channel);
@@ -30,13 +36,21 @@ export default function ChannelScreen() {
     return <ActivityIndicator />;
   }
 
-  const insets = useSafeAreaInsets();
-
   return (
     <View style={{ flex: 1 }}>
       <Stack.Screen
         options={{
           title: "Channel",
+          headerRight: () => (
+            <Pressable
+              onPress={async () => {
+                await channel.delete();
+                router.replace("/(home)/(tabs)");
+              }}
+            >
+              <FontAwesome name="trash" size={20} color={"red"} />
+            </Pressable>
+          ),
         }}
       />
       <Channel channel={channel}>
